@@ -129,7 +129,7 @@ public class ProductController {
 		//Appel de getById pour récupérer le produit depuis la BD
 		ProductDto dto = productService.getById(id);
 		
-		Path path = Paths.get(storageFolder).resolve(dto.getImagePath());
+		Path path = Paths.get(".").resolve(storageFolder+dto.getImagePath());
 		Resource resource = new UrlResource(path.toUri());
 		
 		Path newPath = resource.getFile().toPath();

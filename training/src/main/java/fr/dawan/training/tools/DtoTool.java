@@ -35,7 +35,7 @@ public class DtoTool {
 				);
 				*/
 		
-		return mapper.map(clazz, clazz);
+		return mapper.map(obj, clazz);
 	}
 
 }
