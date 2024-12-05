@@ -65,6 +65,10 @@ public class TrainingApplication {
 			//Liste des Front qui peuvent accéder aux ressources de cette API
 			//Par défaut, seul les front qui se trouve dans le domaine: localhost qui peuvent avoir accès a cette API
 			
+			/*
+			 * Configuration nécessaires pour les fronts externes qui ne sont pas dans localhost
+			 */
+			
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")

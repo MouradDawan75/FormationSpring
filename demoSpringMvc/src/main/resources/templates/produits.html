@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="layouts/index-layout"
+>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap/css/bootstrap.min.css}">
+</head>
+<body>
+<div layout:fragment="content">
+<div class="container">
+<h3>Liste des produits &nbsp; (<a href="/produits/download-csv">Download CSV</a>)</h3>
+<br/>
+
+<div class="container">
+<div class="row">
+
+<div class="col">
+<div class="card"  style="width: 450px; margin:5px; padding: 10px; background-color: orange; border: solide 10px">
+
+<div class="card-title">
+<h4>Rechercher:</h4>
+</div>
+<form th:action="@{/produits/findByKey}" method="get">
+<input type="text" name="motCle" class="form-control"></br>
+<button type="submit" class="btn btn-primary">Rechercher</button>
+
+</form>
+
+
+</div>
+
+</div>
+
+<div class="col" style="border: solid 10px; padding:15px; background-color: orange">
+
+<form th:action="@{/produits/addOrUpdate}" method="post" th:object="${produitForm}">
+
+Id: <input type="text"  class="form-control" th:field="*{id}" readonly="readonly">
+Description: <input type="text"  class="form-control"  th:field="*{description}">
+<div class="alert alert-warning" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+Prix: <input type="text"  class="form-control" th:field="*{prix}">
+<div class="alert alert-warning" th:if="${#fields.hasErrors('prix')}" th:errors="*{prix}"></div>
+Quantité: <input type="text"  class="form-control" th:field="*{quantite}">
+<div class="alert alert-warning" th:if="${#fields.hasErrors('quantite')}" th:errors="*{quantite}"></div>
+</br>
+<button type="submit" class="btn btn-primary">Valider</button>
+
+</form>
+
+</div>
+
+</div>
+
+</div>
+
+<br/>
+<div class="container">
+<table class="table table-hover">
+	<tr>
+		<th>ID</th>
+		<th>Description</th>
+		<th>Prix</th>
+		<th>Quantité</th>
+		<th>Action</th>
+	</tr>
+	
+	<tr th:each="p:${listProduits}">
+		<td th:text="${p.id}"></td>
+		<td th:text="${p.description}"></td>
+		<td th:text="${p.prix}"></td>
+		<td >
+		<a th:href="@{/produits/moins/{id} (id=${p.id})}" class="btn btn-dark">-</a>
+		<span th:text="${p.quantite}"></span>
+		<a th:href="@{/produits/plus/{id} (id=${p.id})}" class="btn btn-dark">+</a>
+		
+		</td>
+		<td><a th:href="@{/produits/delete/{id} (id=${p.id})}" class="btn btn-danger"> Supprimer </a>
+		| <a th:href="@{/produits/modify/{id} (id=${p.id})}" class="btn btn-warning"> Modifier </a>
+		</td>
+	
+	</tr>
+</table>
+</div>
+<div class="container">
+<nav aria-label="Page navigation example">
+  <ul class="pagination">
+    <li class="page-item" th:each="pageNumber:${pageNumbers}">
+    <a class="page-link" th:href="@{/produits/display (page=${pageNumber}, size=${size})}" th:text="${pageNumber}"></a>
+    </li>
+  </ul>
+</nav>
+</div>
+</div>
+</div>
+</body>
+</html>
