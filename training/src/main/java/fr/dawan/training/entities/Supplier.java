@@ -2,6 +2,7 @@ package fr.dawan.training.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+import fr.dawan.training.entities.Product;
 
 import jakarta.persistence.*;
 
@@ -30,6 +31,14 @@ public class Supplier extends BaseEntity{
 		this.products = products;
 	}
 	
+	//Méthode pour le mapping automatique avec productsIds de SupplierDto
 	
+	public Set<Integer> getProductsIds(){
+		Set<Integer> result = new HashSet();
+		for(Product  p : products){
+			result.add(p.getId());
+		}
+		return result;
+	}
 
 }

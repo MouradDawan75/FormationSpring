@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,16 +26,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.dawan.training.dto.CountDto;
-import fr.dawan.training.dto.ProductDto;
-import fr.dawan.training.services.IProductService;
+import fr.dawan.training.dto.UserDto;
+import fr.dawan.training.services.IUserService;
 
 @RestController
-@RequestMapping("/api/products")
-public class ProductController implements ProductApi {
+@RequestMapping("/api/users")
+public class UserController {
 	
 	@Autowired
-	private IProductService productService;
+	private IUserService userService;
 	
 	
 	@Value("${storage.folder}")
@@ -45,73 +43,51 @@ public class ProductController implements ProductApi {
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	//Liste avec pagination
+	//Liste 
 	
-	@Override
-	@GetMapping(value = {"/{page}/{size}/{search}", "/{page}/{size}"}, produces = "application/json")
-	public List<ProductDto> getAllBy(@PathVariable("page") int page, @PathVariable("size") int size,
-			@PathVariable(value = "search", required = false) Optional<String> search) throws Exception{
+	@GetMapping(produces = "application/json")
+	public List<UserDto> getAllBy() throws Exception{
 		
-		//par commance à 1 pour l'utilisateur et commance à 0 pour le Repository
-		if(search.isPresent()) {
-			return productService.getAllBy(page - 1, size, search.get());
-		}else {
-			return productService.getAllBy(page - 1, size, "");
-		}
+		return userService.getAll();
 		
 	}
 	
 	//Get By Id
-	@Override
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Object> getbyId(@PathVariable("id") int id) throws Exception{
-		ProductDto dto = productService.getById(id);
+		UserDto dto = userService.getById(id);
 		if(dto != null) {
 			return ResponseEntity.status(HttpStatus.OK).body(dto);
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with id = "+id+" not found.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id = "+id+" not found.");
 		}
 	}
 	
-	//Compter le nombre de produit avec un filtre
-	
-	@Override
-	@GetMapping(value = {"/count/{search}", "/count"}, produces = "application/json")
-	public CountDto countBy(@PathVariable(value="search", required = false) Optional<String> search) throws Exception{
-		
-		if(search.isPresent()) {
-			return productService.countBy(search.get());
-		}else {
-			return productService.countBy("");
-		}
-		
-	}
+
 	
 	//Delete product
-	@Override
 	@DeleteMapping(value = "/{id}", produces = "text/plain")
 	public ResponseEntity<String> deleteById(@PathVariable("id") int id) throws Exception{
-		ProductDto dto = productService.getById(id);
+		UserDto dto = userService.getById(id);
 		if(dto != null) {
-			productService.deleteById(id);
-			return ResponseEntity.status(HttpStatus.OK).body("Product with id = "+id+" deleted.");
+			userService.deleteById(id);
+			return ResponseEntity.status(HttpStatus.OK).body("User with id = "+id+" deleted.");
 		}else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with id = "+id+" not found.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with id = "+id+" not found.");
 		}
 	}
 	
 	//Save or update product
 	
-	@Override
-	@PostMapping(value="/save", produces = "application/json", consumes = "multipart/form-data")
-	public ResponseEntity<ProductDto> saveOrUpdate(@RequestParam("productDtoStr") String productDtoStr, 
+	@PostMapping(value={"/save", "/update"}, produces = "application/json", consumes = "multipart/form-data")
+	public ResponseEntity<UserDto> saveOrUpdate(@RequestParam("userDtoStr") String userDtoStr, 
 			@RequestParam("file") MultipartFile file) throws Exception{
 		
 		//Gestion du productDtoStr -> convertir en Objet
-		ProductDto dto = objectMapper.readValue(productDtoStr, ProductDto.class);
+		UserDto dto = objectMapper.readValue(userDtoStr, UserDto.class);
 		
 		//Construction du path + personnaliser le nom du fichier
-		String filePath = "/"+dto.getDescription()+"-"+file.getOriginalFilename();
+		String filePath = "/"+dto.getEmail()+"-"+file.getOriginalFilename();
 		File f = new File(storageFolder+filePath);
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(f));
@@ -119,7 +95,7 @@ public class ProductController implements ProductApi {
 		
 		dto.setImagePath(filePath);
 		
-		ProductDto savedDto = productService.saveOrUpdate(dto);
+		UserDto savedDto = userService.saveOrUpdate(dto);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(savedDto);
 				
@@ -128,12 +104,11 @@ public class ProductController implements ProductApi {
 	
 	//Get product image by id
 	
-	@Override
-	@GetMapping(value="/image/{productId}", produces = "application/octet-stream")
-	public ResponseEntity<Resource> getProductImage(@PathVariable("productId") int id) throws Exception{
+	@GetMapping(value="/image/{userId}", produces = "application/octet-stream")
+	public ResponseEntity<Resource> getProductImage(@PathVariable("userId") int id) throws Exception{
 		
 		//Appel de getById pour récupérer le produit depuis la BD
-		ProductDto dto = productService.getById(id);
+		UserDto dto = userService.getById(id);
 		
 		Path path = Paths.get(".").resolve(storageFolder+dto.getImagePath());
 		Resource resource = new UrlResource(path.toUri());
