@@ -25,6 +25,7 @@
         <div class="text-center mt-3">
             <small>Don't have an account? <a th:href="@{/create-account}">Create account</a></small>
         </div>
+        <div th:if="${errorMessage}" th:text="${errorMessage}" style="color:red;font-style:italic;"></div>
     </div>
 </div>
 <!-- Bootstrap JS Bundle -->

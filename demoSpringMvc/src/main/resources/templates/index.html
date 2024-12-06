@@ -62,6 +62,26 @@ Votre nom: <div th:if="${player.name.length > 0}">
 <a th:href="@{/produits/display}">Gestion des produits</a>
 <b>(<a th:href="@{/load}">Charger les données de test</a>)</b>
 </div>
+<br/>
+
+<h3>Internationalisation</h3>
+<br/>
+<p th:text="#{greeting}">default</p>
+<p th:text="#{farewall}">default</p>
+
+<a href="?lang=en">English</a> |
+<a href="?lang=fr">Français</a> |
+<a href="?lang=es">Espagnole</a>
+<br/>
+<p>EN utilisant un dropwown liste</p>
+
+<form method="get" action="/">
+	<select name="lang" onchange="this.form.submit()">
+		<option value="en" th:text="#{english}">English</option>
+		<option value="fr" th:text="#{french}">Français</option>
+		<option value="es" th:text="#{spanish}">Espagnole</option>	
+	</select>
+</form>
 
 </div>
 <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>

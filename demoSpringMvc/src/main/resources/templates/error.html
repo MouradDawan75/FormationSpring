@@ -1,10 +1,110 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" type="text/css"
+	th:href="@{/bootstrap/css/bootstrap.min.css}">
 <title>Error page</title>
 </head>
 <body>
-<h3>Une erreur s'est produite. Pour revenir à la page d'accueil <a href="/">cliquze ici</a></h3>
+	<h3>
+		Une erreur s'est produite. Pour revenir à la page d'accueil <a
+			href="/">cliquze ici</a>
+	</h3>
+	
+	<h3>Contenu affiché via le @ControllerAdvice</h3>
+	<br>
+	
+	<div th:text="${exMessage}"></div>
+	
+	
+	<h3>Contenu affiché sans le @ControllerAdvice</h3>
+	<div class="container">
+
+		<div class="row rowDesign">
+
+			<div class="col-md-4 ml-auto">
+				<span>Date</span>
+			</div>
+
+			<div class="col-md-8">
+				<span th:text="${timestamp}"></span>
+			</div>
+
+		</div>
+		
+		<div class="row rowDesign">
+
+			<div class="col-md-4 ml-auto">
+				<span>Status</span>
+			</div>
+
+			<div class="col-md-8">
+				<span th:text="${status}"></span>
+			</div>
+
+		</div>
+		
+		<div class="row rowDesign">
+
+			<div class="col-md-4 ml-auto">
+				<span>Path</span>
+			</div>
+
+			<div class="col-md-8">
+				<span th:text="${path}"></span>
+			</div>
+
+		</div>
+
+		<div class="row rowDesign">
+
+			<div class="col-md-4 ml-auto">
+				<span>Error</span>
+			</div>
+
+			<div class="col-md-8">
+				<span th:text="${error}"></span>
+			</div>
+
+		</div>
+
+		<div class="row rowDesign">
+
+			<div class="col-md-4 ml-auto">
+				<span>Message</span>
+			</div>
+
+			<div class="col-md-8">
+				<span th:text="${message}"></span>
+			</div>
+
+			<div class="row rowDesign">
+
+				<div class="col-md-4 ml-auto">
+					<span>Exception</span>
+				</div>
+
+				<div class="col-md-8">
+					<span th:text="${exception}"></span>
+				</div>
+
+			</div>
+			
+				<div class="row rowDesign">
+
+				<div class="col-md-4 ml-auto">
+					<span>Trace</span>
+				</div>
+
+				<div class="col-md-8">
+					<span th:text="${trace}"></span>
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
 </body>
 </html>
